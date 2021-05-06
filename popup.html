@@ -1,15 +1,46 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>GTmetrix Analyzer</title>
-    <script src="popup.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mainCSS.css">
+    <title>Document</title>
 </head>
 
+
 <body>
-    <h1>GTmetrix Analyzer</h1>
-    <button id="checkPage">Check this page now!</button> Your Url is
-    <spam id="urlHere"></spam>
+    <div id="mainContainer">
+        <div class="mainContainerItem" id="buttonContainer">
+            <button onclick="showForm()" id="AddButton">Add</button>
+            <button id="ALLButton">All</button>
+            <button>Current</button>
+        </div>
+        <div class="mainContainerItem" id="addDataFormContainer">
+            <form name="addForm" action="">
+                <input type="radio" id="urlPatternRadio" value="urlPattern" name="method" checked="true">
+                <label for="urlPatternRadio">UrlPattern</label>
+                <input type="radio" id="keywordPatternRadio" value="keyWords" name="method">
+                <label for="keywordPatternRadio">KeyWords</label>
+                <div id="formChangeThis">
+                    <label for="PatternTextBox">Enter Url pattern (Regex):</label>
+                    <input type="text" name="urlPattern" placeholder="Enter Pattern" id="PatternTextBox">
+
+
+                </div>
+                <label for="tokenDataTextbox">Enter Token Data:</label>
+                <textarea type="text" id="tokenDataTextbox" name="tokenDataTextbox" placeholder="Enter Data" cols="20" rows="10"></textarea>
+
+                <a class="button" id="SubmitButton">Submit</a>
+            </form>
+        </div>
+        <div class="mainContainerItem" id="tokenContainer">
+            <i>No Data</i>
+        </div>
+
+    </div>
+    <script src="popup.js"></script>
 </body>
 
 </html>

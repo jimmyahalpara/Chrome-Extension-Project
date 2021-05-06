@@ -1,0 +1,94 @@
+html {
+    margin: 0px;
+    padding: 0px;
+    height: 500px;
+    width: 300px;
+}
+
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+hr {
+    color: rgb(34, 34, 34);
+}
+
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainContainerItem {
+    width: 90%;
+    border: 1px solid white;
+    margin: 5px 10px;
+    padding: 5px 10px;
+    background-color: rgb(36, 36, 36);
+}
+
+#addDataFormContainer {
+    display: none;
+}
+
+#buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button,
+.button {
+    background-color: rgb(82, 82, 82);
+    color: inherit;
+    border: 1px solid white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5px 5px;
+    padding: 3px 5px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+button:active,
+.button:active {
+    background-color: white;
+    color: black;
+}
+
+button:hover,
+.button:hover {
+    color: gray;
+}
+
+input,
+textarea {
+    background-color: rgb(197, 197, 197);
+    font-family: inherit;
+    color: black;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: black;
+}
+
+#tokenContainer {
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+}
+
+.tokenItem {
+    border: 1px solid white;
+    margin: 10px 0px;
+    padding: 5px 5px;
+    background-color: black;
+}
