@@ -33,8 +33,35 @@
 
 // global variables
 let tokenArray = [];
+let url = null;
+let currentArray = []
+
+// get current url
+// document.addEventListener("DOMContentLoaded", function() {
+//     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+//         let url = tabs[0].url;
+//         // use `url` here inside the callback because it's asynchronous
+//         print("URL LOADED")
+
+//     });
+// });
+
+chrome.tabs.getSelected(null, function(tab) {
+    url = tab.url;
+});
 
 // update/delete/copy token list 
+function copyALL(number) {
+    var el = document.getElementById(`ti${number}`).innerHTML;
+    var fullLink = document.createElement('input');
+    document.body.appendChild(fullLink);
+    fullLink.value = el;
+    console.log("HELLOW", el);
+    fullLink.select();
+    document.execCommand("copy", false);
+    fullLink.remove();
+}
+
 
 function deleteToken(number) {
     delete tokenArray[number];
@@ -42,15 +69,74 @@ function deleteToken(number) {
         return el != null;
     });
     updatTokenListShowAll(tokenArray)
+    storeData()
 }
 
 function updatTokenListShowAll(obj) {
     let htmlContent = "";
     let count = 0;
     let tokenContainerElement = document.getElementById("tokenContainer");
+    let callableList = [];
 
     obj.forEach(element => {
-        console.log(element);
+        let data = element.data;
+        let urlKey;
+
+        if (element.type == "url") {
+            urlKey = element.pattern;
+        } else {
+            urlKey = element["keywords"].join();
+        }
+
+        htmlContent += `
+        <div class="tokenItem">
+                Keyword / Pattern : ${urlKey} <br>
+                <hr> Data : <br>
+                <p id="ti${count}">${data}</p>
+                <hr>
+                <button id="cb${count}">Copy</button>
+                <button id= "db${count}">Delete</button>
+            </div>
+        `
+        callableList.push(
+            function er(n) {
+                idst = "db" + n;
+                idcp = "cb" + n;
+
+
+                document.getElementById(idst).addEventListener("click", (e) => {
+                    deleteToken(n);
+                });
+
+                document.getElementById(idcp).addEventListener("click", (e) => {
+                    copyALL(n);
+                });
+            }
+        )
+        count++;
+
+
+
+
+    });
+
+
+    htmlContent = htmlContent == "" ? "<i>No Data</i>" : htmlContent;
+    tokenContainerElement.innerHTML = htmlContent;
+    count = 0;
+    callableList.forEach(element => {
+        element(count);
+        count++;
+    });
+}
+
+
+function updatTokenListCurrent(obj) {
+    let htmlContent = "";
+    let count = 0;
+    let tokenContainerElement = document.getElementById("tokenContainer");
+
+    obj.forEach(element => {
         let data = element.data;
         let urlKey;
         if (element.type == "url") {
@@ -68,7 +154,6 @@ function updatTokenListShowAll(obj) {
                 </p>
                 <hr>
                 <button>Copy</button>
-                <button  onclick="deleteToken(${count})">Delete</button>
             </div>
         `
         count++;
@@ -143,34 +228,80 @@ function addToken() {
     // console.log("HELLO");
     // console.log(inputBOX.value.split(","));
     tokenArray.push(obj);
+    storeData()
 }
 
 
 // -------------BUTTON CLICK EVENTS
 
 document.getElementById("ALLButton").addEventListener("click", (e) => {
-    console.log("CLICKED ALL");
     updatTokenListShowAll(tokenArray)
 });
 
 
 document.getElementById("AddButton").addEventListener("click", (e) => {
-    console.log("Clicked Add");
     showForm()
 });
 
 document.getElementById("urlPatternRadio").addEventListener("change", (e) => {
-    console.log("Clicked urlPattern");
     changedURL();
 });
 
 document.getElementById("keywordPatternRadio").addEventListener("change", (e) => {
-    console.log("Clicked keyword");
     changedKeyWord();
 });
 
 document.getElementById("SubmitButton").addEventListener("click", (e) => {
-    console.log("Clicked Submit");
     clickedSubmit();
 });
-// -------------
+
+document.getElementById("CurrentButton").addEventListener("click", (e) => {
+        updateCurrent();
+        updatTokenListCurrent(currentArray);
+    })
+    // -------------
+
+// searching tokenarray and make another currentArray
+
+
+
+function updateCurrent() {
+    currentArray = []
+    tokenArray.forEach(element => {
+        if (element.type == "url") {
+            let reg = new RegExp(element.pattern);
+            if (reg.test(url)) {
+                currentArray.push(element);
+            }
+        } else {
+
+        }
+    });
+    console.log("AFTER UDATE CURRENT ARRAY", currentArray);
+
+}
+
+// ------- Function to store and retrive objects
+function getData() {
+    tokenArray = JSON.parse(localStorage.getItem("tokenData"));
+    if (tokenArray == null) {
+        tokenArray = [];
+        localStorage.setItem("tokenData", "[]");
+    }
+}
+
+function storeData() {
+    localStorage.setItem("tokenData", JSON.stringify(tokenArray));
+}
+
+// -------
+
+
+
+getData()
+
+setTimeout(() => {
+    while (url == null);
+    updateCurrent();
+    updatTokenListCurrent(currentArray);
+}, 1);
